@@ -12,6 +12,9 @@ pygame.display.set_caption('Checkers')
 def main():
     run = True
     clock = pygame.time.Clock()
+
+    # Call checkersGame
+    
     board = Board()
 
 
@@ -26,7 +29,7 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pass
 
-        board.draw_squares(WIN)
+        board.draw(WIN)
         pygame.display.update()
 
     pygame.quit()
