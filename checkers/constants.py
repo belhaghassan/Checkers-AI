@@ -11,4 +11,7 @@ GREY = (105,105,105)
 WHITE = (255, 255, 255)
 BLACK = (0,0,0)
 BLUE = (0,0,255)
+
+
+CROWN = pygame.transform.scale(pygame.image.load('Checkers_AI/assets/king.png'), (44, 25))
 #************************************************

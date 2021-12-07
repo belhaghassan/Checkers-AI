@@ -1,18 +1,32 @@
 import pygame
-from piece import Piece
-from constants import WHITE, ROWS, RED, GREY, SQUARE_SIZE, COLS, BLACK
+from .piece import Piece
+from .constants import WHITE, ROWS, RED, GREY, SQUARE_SIZE, COLS, BLACK
 
 class Board:
     def __init__(self):
         self.board = []
         self.turn = 0
-        self.selected_piece = None
         self.red_left = 12
         self.black_left = 12
         self.red_kings = 0
         self.black_kings = 0
         self.create_board()
 
+    def move(self, piece, row, col):
+        self.board[piece.row][piece.col], self.board[row][col] = self.board[row][col], self.board[piece.row][piece.col]
+        piece.move(row, col)
+
+        if row == ROWS or row == 0:
+            piece.make_king()
+            if piece.color == RED:
+                self.red_kings += 1
+            else:
+                self.black_kings += 1
+
+    def get_piece(self, row, col):
+        return self.board[row][col]
+
+    # Draw each square for board
     def draw_squares(self, win):
         win.fill(GREY) #FILL BOARD WITH BLACK
         for row in range(ROWS):
@@ -20,6 +34,7 @@ class Board:
                 pygame.draw.rect(win, WHITE, (row*SQUARE_SIZE, col*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
 
+    # Fill in Checker board with board pieces
     def create_board(self):
         for row in range(ROWS):
             self.board.append([])
