@@ -1,12 +1,4 @@
 import pygame
-import piece
-import copy 
-import math 
-import random
-import datetime
-import time
-import _thread
-
 from constants import *
 from piece import * 
 
@@ -109,25 +101,28 @@ class Board:
         self.board = []
         self.turn = 0
         self.selected_piece = None
-        self.red_left = 6
-        self.black_left = 6
+        self.red_left = (ROWS // 2 -1) * (COLS // 2) 
+        self.black_left = (ROWS // 2 -1) * (COLS // 2) 
         self.red_kings = 0
         self.black_kings = 0
         self.make_board()
 
+        
         #just for message purposes 
         self.message = False
 
     #this creates the board
     #Changing from 8x8 to 6x6 for simplicity sake we can expand to other sizes if we need to in the future.  
     def make_board(self):
+        print("RED LEFT: ", self.red_left)
+        print("BLACK LEFT: ", self.black_left)
         for row in range(ROWS):
             self.board.append([])
             for col in range(COLS):
                 if col % 2 == ((row + 1) % 2):
-                    if row < 2:
+                    if row < ROWS//2 - 1:
                         self.board[row].append(Piece(row,col,RED))
-                    elif row > 3:
+                    elif row > ROWS//2:
                         self.board[row].append(Piece(row,col,BLACK))
                     else:
                         self.board[row].append(0)
