@@ -16,7 +16,7 @@ def minimax(position, depth, max_player, game):
 		return position.evaluate(), position
 
 	if max_player:
-		maxEval = float('-10000')
+		maxEval = -math.inf
 		best_move = None
 		for move in get_all_moves(position, RED, game):
 			evaluation = minimax(move, depth-1, False, game)[0]
@@ -27,7 +27,7 @@ def minimax(position, depth, max_player, game):
 		return maxEval, best_move
 
 	else:
-		minEval = float('10000')
+		minEval = math.inf
 		best_move = None
 		for move in get_all_moves(position, BLACK, game):
 			evaluation = minimax(move, depth-1, True, game)[0]
@@ -36,9 +36,75 @@ def minimax(position, depth, max_player, game):
 				best_move = move
 
 		return minEval, best_move
+'''
+def alphaBetaSearch(self, depth, game):
+	#debugging
+	# collect statistics for the search
+	self.positiveInf = math.inf
+	self.negativeInf = -math.inf
+    self.currentDepth = 0
+    self.maxDepth = 0
+    self.numNodes = 0
+    self.maxPruning = 0
+    self.minPruning = 0
+
+    self.bestMove = []
+    self.depth = depth
+
+    starttime = datetime.datetime.now()
+    v = self.maxValue(state, negativeInf, positiveInf, self.depth)
+
+    print("Time = " + str(datetime.datetime.now() - starttime))
+    print("selected value " + str(v))
+    print("(1) max depth of the tree = {0:d}".format(self.maxDepth))
+    print("(2) total number of nodes generated = {0:d}".format(self.numNodes))
+    print("(3) number of times pruning occurred in the MAX-VALUE() = {0:d}".format(self.maxPruning))
+    print("(4) number of times pruning occurred in the MIN-VALUE() = {0:d}".format(self.minPruning))
+
+    return self.bestMove
+
+#RED 
+def maxValue(self, alpha, beta, depth):
+	self.currentDepth += 1 
+	self.maxDepth = max(self.maxDepth, self.currentDepth)
+	self.numNodes += 1
+
+	v = -math.inf
+	#apply logic from minimax algorithm here for the checker's game 
+	for a in get_all_moves()
+
+	if v >= beta:
+		self.maxPruning += 1 
+		self.currentDepth -= 1
+		return v
+	alpha = max(alpha, v)
+
+	self.currentDepth -= 1 
+	return v
+
+#BLACK aka us 
+def minValue(self, alpha, beta, depth):
+	self.currentDepth += 1 
+	self.maxDepth = max(self.maxDepth, self.currentDepth)
+	self.numNodes += 1
+
+	v = math.inf
+	#apply logic from minimax algorithm here for the checker's game 
+
+	#pruning section 
+	#pruning section should be inside the for loop 
+	if v <= alpha:
+		self.minPruning += 1
+		self.currentDepth -= 1
+		return v
+	beta = min(beta, v) 
+
+	self.currentDepth -= 1
+	return v 
+'''
 
 
-#whatever the fuck this thing is doing is moving the gamestate forward while it simulates the moves which can just fuck me over 
+#Figured out the stupid simulate moves 
 def simulate_move(piece, move , board, game, skip):
 	board.move(piece, move[0], move[1])
 	if skip:

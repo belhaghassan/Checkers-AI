@@ -25,9 +25,9 @@ class Game:
     def __init__(self, win):
         self._init()
         self.win = win
-        self.lock = _thread.allocate_lock()
-        self.difficulty = difficulty
-        self.AIPlayer = AIPlayer(self, self.difficulty)
+        #self.lock = _thread.allocate_lock()
+        #self.difficulty = difficulty
+        #self.AIPlayer = AIPlayer(self, self.difficulty)
 
 
     def getDiff(self):
@@ -54,6 +54,9 @@ class Game:
 
     def winner(self):
         return self.board.winner()
+
+    def terminate(self):
+        return self.board.terminate()
 
     #reset the game once we're done
     def reset(self):
@@ -196,30 +199,38 @@ class Board:
                     piece.draw(win)
 
     #YOUR USEFULNESS IS OUTLIVED NOW PERISH 
+    #Reverse Uno Card because somehow the logic has changed????????
     def remove(self, pieces): 
         for piece in pieces: 
             self.board[piece.row][piece.col] = 0 
-            if piece != 0:
-                self.red_left -= 1
-                print("Red Pieces: ")
-                print(self.red_left)
+            if piece.color == RED:
+                self.black_left -= 1
             else:
-                self.black_left -=1
-                print("Black Pieces: ")
-                print(self.black_left)
+                self.red_left -=1
+
 
 
     #winner winner chicken dinner
     #gotta figure out 
     def winner(self):
         if self.red_left == 0:
+            print("Red Wins")
+            return RED 
+        elif self.black_left == 0:
             print("Black wins")
             return BLACK 
-        elif self.black_left == 0:
-            print("Red wins")
-            return RED 
         else:
             return None 
+
+    '''
+    def terminate(self):
+        if self.red_left == 0:
+            self.winner()
+        elif self.black_left == 0:
+            self.winner()
+        else:
+            return None
+    '''
 
     def get_piece(self, row, col):
         singlePiece = self.board[row][col]
@@ -235,16 +246,19 @@ class Board:
         #update red or black piece 
 
         if piece.king:
-            moves.update(self.move_piece_left(row + 1, min(row + 2, ROWS), 1, piece.color, left))
-            moves.update(self.move_piece_right(row + 1, min(row + 2, ROWS), 1, piece.color, right))
+            #looking down the rows
+            moves.update(self.move_piece_left(row + 1, min(row + 3, ROWS), 1, piece.color, left))
+            moves.update(self.move_piece_right(row + 1, min(row + 3, ROWS), 1, piece.color, right))
+            #looking up the rows 
             moves.update(self.move_piece_left(row - 1, max(row - 3, -1), -1, piece.color, left))
             moves.update(self.move_piece_right(row - 1, max(row - 3, -1), -1, piece.color, right))
+        #if the piece isn't a king then just find out if it's black or red and give it's normal rows 
         elif piece.color == BLACK:
             moves.update(self.move_piece_left(row - 1, max(row - 3, -1), -1, piece.color, left))
             moves.update(self.move_piece_right(row - 1, max(row - 3, -1), -1, piece.color, right))
         elif piece.color == RED:
-            moves.update(self.move_piece_left(row + 1, min(row + 2, ROWS), 1, piece.color, left))
-            moves.update(self.move_piece_right(row + 1, min(row + 2, ROWS), 1, piece.color, right))
+            moves.update(self.move_piece_left(row + 1, min(row + 3, ROWS), 1, piece.color, left))
+            moves.update(self.move_piece_right(row + 1, min(row + 3, ROWS), 1, piece.color, right))
 
         return moves 
 

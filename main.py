@@ -25,12 +25,21 @@ def main():
         clock.tick(FPS)
         
         if game.turn == RED:
-            value, new_board = minimax(game.get_board(), 1, RED, game)
+            value, new_board = minimax(game.get_board(), 4, RED, game)
             game.ai_move(new_board)
 
+        
         if game.winner() != None:
             print(game.winner())
             run = False
+        
+
+        #Trying to change the method so that it would check if the pieces = to 0 then run the game.winner() command but seems to be having issues
+        '''
+        if game.terminate() != None:
+            print(game.winner())
+            run = False
+        '''
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
