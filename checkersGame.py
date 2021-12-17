@@ -101,6 +101,8 @@ class Game:
             self.turn = BLACK
         else:
             self.turn = RED
+       
+        
 
     def get_board(self):
         return self.board
@@ -131,8 +133,6 @@ class Board:
     #this creates the board
     #Changing from 8x8 to 6x6 for simplicity sake we can expand to other sizes if we need to in the future.  
     def make_board(self):
-        print("RED LEFT: ", self.red_left)
-        print("BLACK LEFT: ", self.black_left)
         for row in range(ROWS):
             self.board.append([])
             for col in range(COLS):
@@ -203,10 +203,10 @@ class Board:
     def remove(self, pieces): 
         for piece in pieces: 
             self.board[piece.row][piece.col] = 0 
-            if piece.color == RED:
+            if piece.color == BLACK:
                 self.black_left -= 1
             else:
-                self.red_left -=1
+                self.red_left -= 1
 
 
 
@@ -214,11 +214,11 @@ class Board:
     #gotta figure out 
     def winner(self):
         if self.red_left == 0:
-            print("Red Wins")
-            return RED 
+            # print("Red Wins")
+            return "Black wins" 
         elif self.black_left == 0:
-            print("Black wins")
-            return BLACK 
+            # print("Black wins")
+            return "Red Wins"
         else:
             return None 
 
@@ -259,6 +259,7 @@ class Board:
         elif piece.color == RED:
             moves.update(self.move_piece_left(row + 1, min(row + 3, ROWS), 1, piece.color, left))
             moves.update(self.move_piece_right(row + 1, min(row + 3, ROWS), 1, piece.color, right))
+            
 
         return moves 
 

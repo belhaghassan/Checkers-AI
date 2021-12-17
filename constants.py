@@ -3,7 +3,11 @@ import pygame
 # Declare Constants for GameBoard and Game Pieces
 # ***********************************************
 
+<<<<<<< Updated upstream
 ROWS, COLS = 6,6
+=======
+ROWS, COLS = 8, 8
+>>>>>>> Stashed changes
 WIDTH, HEIGHT = ROWS*100, COLS*100
 SQUARE_SIZE = WIDTH//COLS
 
