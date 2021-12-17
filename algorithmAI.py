@@ -1,60 +1,49 @@
-from copy import deepcopy
-import pygame
+import copy 
+import math 
+import random 
+import datetime
 
-RED = (255, 0, 0)
-BLACK = (0,0,0)
+from checkersGame import * 
+from constants import * 
 
-def minimax(position, depth, max_player, game):
-	if depth == 0 or position.winner() != None:
-		return position.evaluate(), position
+class AIPlayer():
+	def __init__(self, game, difficulty):
+		self.game = game
+		self.difficulty = difficulty
 
-	if max_player:
-		maxEval = float('-inf')
-		best_move = None
-		for move in get_all_moves(position, RED, game):
-			evaluation = minimax(move, depth-1, False, game)[0]
-			maxEval = max(maxEval, evaluation)
-			if maxEval == evaluation:
-				best_move = move
+	def getMoveDifficulty(self):
+		if self.difficulty == 1:
+			return self.easyDiff()
+		else:
+			return self.hardDiff()
 
-		return maxEval, best_move
+	def easyDiff(self):
+		state = AIGameState(self.game)
+		moves = state.getActions(False)
+		index = random.randrange(len(moves))
+		basicMove = moves[index]
+		return basicMove[0], basicMove[1], basicMove[2], basicMove[3]
 
-	else:
-		minEval = float('inf')
-		best_move = None
-		for move in get_all_moves(position, BLACK, game):
-			evaluation = minimax(move, depth-1, True, game)[0]
-			minEval = min(minEval, evaluation)
-			if minEval == evaluation:
-				best_move = move
+	def hardDiff(self):
+		state = AIGameState(self.game)
+		depthLimit = self.computeDepthLimit(state)
+		hardMove = self.alphaBetaSearch(state, depth)
+		return hardMove[0], hardMove[1], hardMove[2], hardMove[3]
 
-		return minEval, best_move
+	def computeDepthLimit(self, state):
+		checkersRemaining = len(state.AICheckers) + len(state.humanCheckers) 
+		return 26 - checkersRemaining
 
+	def alphaBetaSearch(self, state, depthLimit)
+		#debugging
+		self.currentDepth = 0 
+		self.maxDepth = 0 
+		self.numnodes = 0 
+		self.maxPruning = 0 
+		self.minPruning = 0 
 
-def simulate_move(piece, move , board, game, skip):
-	board.move(piece, move[0], move[1])
-	if skip:
-		board.remove(skip)
+		self.bestMove = []
+		self.depthLimit = depthLimit
 
-	return board
-
-def get_all_moves(board, color, game):
-	moves = []
-
-	for piece in board.get_all_pieces(color):
-		valid_moves = board.get_valid_moves(piece)
-		for move, skip in valid_moves.items():
-			#draw_moves(game, board, piece)
-			temp_board = deepcopy(board)
-			temp_piece = temp_board.get_piece(piece.row, piece.col)
-			new_board = simulate_move(temp_piece, move, temp_board, game, skip)
-			moves.append(new_board)
-
-	return moves
-
-def draw_moves(game, board, piece):
-	valid_moves = board.get_valid_moves(piece)
-	board.draw(game.win)
-	pygame.draw.circle(game.win, (0,255,0), (piece.x, piece.y), 50, 5)
-	game.get_valid_moves(valid_moves.keys())
-	pygame.display.update()
+		starttime = datetime.datetime.now()
+		v = self.maxValue(state, -1000, 1000, self.depthLimit)

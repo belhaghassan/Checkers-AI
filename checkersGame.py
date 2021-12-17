@@ -1,6 +1,9 @@
 import pygame
+import time
+import _thread
 from constants import *
 from piece import * 
+from algorithmAI import * 
 
 
 
@@ -22,7 +25,18 @@ class Game:
     def __init__(self, win):
         self._init()
         self.win = win
-        #self.difficulty = difficulty
+        self.lock = _thread.allocate_lock()
+        self.difficulty = difficulty
+        self.AIPlayer = AIPlayer(self, self.difficulty)
+
+
+    def getDiff(self):
+        answer = eval(input("(1 for easy, 2 for hard) Difficulty Level: "))
+        while not (answer == 1 or answer == 2):
+            print ("Invalid inpurt, please enter 1 or 2")
+            answer = eval(input("(1 for easy, 2 for hard) Difficulty Level: "))
+        return answer 
+
 
     #UPDATE THE BOARD WITH OUR DUMB MOVES AAAAAAAAAAAAAAAAA
     def update(self):
@@ -101,8 +115,8 @@ class Board:
         self.board = []
         self.turn = 0
         self.selected_piece = None
-        self.red_left = (ROWS // 2 -1) * (COLS // 2) 
-        self.black_left = (ROWS // 2 -1) * (COLS // 2) 
+        self.red_left = 6
+        self.black_left = 6
         self.red_kings = 0
         self.black_kings = 0
         self.make_board()
@@ -187,8 +201,12 @@ class Board:
             self.board[piece.row][piece.col] = 0 
             if piece != 0:
                 self.red_left -= 1
+                print("Red Pieces: ")
+                print(self.red_left)
             else:
                 self.black_left -=1
+                print("Black Pieces: ")
+                print(self.black_left)
 
 
     #winner winner chicken dinner
