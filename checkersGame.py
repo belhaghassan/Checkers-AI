@@ -118,8 +118,8 @@ class Board:
         self.board = []
         self.turn = 0
         self.selected_piece = None
-        self.red_left = 6
-        self.black_left = 6
+        self.red_left = (ROWS // 2 -1) * (COLS // 2) 
+        self.black_left = (ROWS // 2 -1) * (COLS // 2) 
         self.red_kings = 0
         self.black_kings = 0
         self.make_board()
