@@ -233,23 +233,35 @@ class Board:
         row = piece.row 
 
         #update red or black piece 
-        if piece.color == BLACK or piece.king:
+
+        if piece.king:
+            moves.update(self.move_piece_left(row + 1, min(row + 2, ROWS), 1, piece.color, left))
+            moves.update(self.move_piece_right(row + 1, min(row + 2, ROWS), 1, piece.color, right))
             moves.update(self.move_piece_left(row - 1, max(row - 3, -1), -1, piece.color, left))
             moves.update(self.move_piece_right(row - 1, max(row - 3, -1), -1, piece.color, right))
-        elif piece.color == RED or piece.king:
-            moves.update(self.move_piece_left(row + 1, min(row + 3, ROWS), 1, piece.color, left))
-            moves.update(self.move_piece_right(row + 1, min(row + 3, ROWS), 1, piece.color, right))
+        elif piece.color == BLACK:
+            moves.update(self.move_piece_left(row - 1, max(row - 3, -1), -1, piece.color, left))
+            moves.update(self.move_piece_right(row - 1, max(row - 3, -1), -1, piece.color, right))
+        elif piece.color == RED:
+            moves.update(self.move_piece_left(row + 1, min(row + 2, ROWS), 1, piece.color, left))
+            moves.update(self.move_piece_right(row + 1, min(row + 2, ROWS), 1, piece.color, right))
 
         return moves 
 
-    #SHIMMY DOWN/UP LEFT OR RIGHT 
+    #SHIMMY UP LEFT OR RIGHT 
     def move_piece_left(self, start, stop, step, color, left, skipped=[]):
+        #dict of moves
         moves = {}
+        #list of last moves 
         last = []
+        #if there is no space left in the left side then break 
+        #r = row 
         for r in range(start, stop, step):
+            #if we look outside the board, then break 
             if left < 0:
                 break
             
+            #
             current = self.board[r][left]
             if current == 0:
                 if skipped and not last:
@@ -276,6 +288,8 @@ class Board:
         
         return moves
 
+    #step do i go up or down 
+    #skipped will tell us have we skipped any pieces, we can only move to 
     def move_piece_right(self, start, stop, step, color, right, skipped=[]):
         moves = {}
         last = []

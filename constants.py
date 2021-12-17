@@ -26,5 +26,5 @@ SOUTHEAST = "southeast"
 # The stupid crown 
 # ***********************************************
 BeegCrown = pygame.image.load('resources/crown.png')
-CROWN = pygame.transform.scale(BeegCrown, (50, 50))
+CROWN = pygame.transform.scale(BeegCrown, (30, 30))
 # ***********************************************
