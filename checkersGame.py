@@ -203,7 +203,7 @@ class Board:
     def remove(self, pieces): 
         for piece in pieces: 
             self.board[piece.row][piece.col] = 0 
-            if piece.color == BLACK:
+            if piece.color == RED:
                 self.black_left -= 1
             else:
                 self.red_left -= 1
