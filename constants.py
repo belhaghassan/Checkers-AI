@@ -3,7 +3,9 @@ import pygame
 # Declare Constants for GameBoard and Game Pieces
 # ***********************************************
 
-ROWS, COLS = 6, 6
+ROWS, COLS = 6,6
+# ROWS, COLS = 8, 8
+
 WIDTH, HEIGHT = ROWS*100, COLS*100
 SQUARE_SIZE = WIDTH//COLS
 
@@ -11,7 +13,6 @@ RED = (255, 0, 0)
 GREY = (105,105,105)
 WHITE = (255, 255, 255)
 BLACK = (0,0,0)
-BLUE = (0,0,255)
 GREEN = (0,255,0)
 #************************************************
 
@@ -27,5 +28,5 @@ SOUTHEAST = "southeast"
 # The stupid crown 
 # ***********************************************
 BeegCrown = pygame.image.load('resources/crown.png')
-CROWN = pygame.transform.scale(BeegCrown, (50, 50))
+CROWN = pygame.transform.scale(BeegCrown, (30, 30))
 # ***********************************************
