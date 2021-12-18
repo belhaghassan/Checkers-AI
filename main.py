@@ -81,10 +81,10 @@ def main():
 
         
         #Checks the game each turn for a winner
-        if game.winner() != None:
+        if game.terminate() != None:
 
             root=Tk()
-            tkinter.messagebox.showinfo('Congratulations!',game.winner())
+            tkinter.messagebox.showinfo('Congratulations!',game.terminate())
             root.mainloop()
 
             run = False
