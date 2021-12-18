@@ -3,8 +3,8 @@ import pygame
 # Declare Constants for GameBoard and Game Pieces
 # ***********************************************
 
-ROWS, COLS = 6,6
-# ROWS, COLS = 8, 8
+# ROWS, COLS = 6,6
+ROWS, COLS = 8, 8
 
 WIDTH, HEIGHT = ROWS*100, COLS*100
 SQUARE_SIZE = WIDTH//COLS
