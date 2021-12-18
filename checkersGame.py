@@ -216,7 +216,7 @@ class Board:
 
 
 
-    #terminate terminate chicken dinner
+    #chicken dinner
     #gotta figure out 
     def terminate(self):
         if self.red_left == 0:
