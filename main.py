@@ -1,5 +1,7 @@
 import pygame
 import tkinter as tk
+from tkinter import *
+import tkinter.messagebox
 from checkersGame import *
 from constants import *
 from algorithmAI import *
@@ -8,8 +10,7 @@ from algorithmAI import *
 FPS = 60
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption('Checkers n Friends')
-
+pygame.display.set_caption('Checkers n\' Friends')
 
 
 #Get the position from the mouse clicking event
@@ -33,7 +34,7 @@ def tkinterDiff():
     root = tk.Tk()
 
     v = tk.IntVar()
-    v.set(1) #Initializes the choice, i.e. Python 
+    v.set(3) #Initializes the choice, i.e. Python 
 
     #Difficulty Choices (changes the depth depending on the choice picked) 
     choices = [ ("1. Easy", 1),
@@ -52,6 +53,7 @@ def tkinterDiff():
                        text=choice,
                        variable=v,
                        value=val).pack(anchor=tk.W)
+             
     root.mainloop()
     return v.get()
 
@@ -61,13 +63,13 @@ def main():
 
     #For the console version if TKinter doesn't work out. 
     #depth = getDiff()
-    depth = tkinterDiff()
-    print("Difficulty: ", depth)
 
     run = True
     clock = pygame.time.Clock()
     game = Game(WIN)
 
+    depth = tkinterDiff()
+    print("Difficulty: ", depth)
 
     while run:
         clock.tick(FPS)
@@ -79,6 +81,17 @@ def main():
 
         
         #Checks the game each turn for a winner
+        if game.winner() != None:
+
+            root=Tk()
+            tkinter.messagebox.showinfo('Congratulations!',game.winner())
+            root.mainloop()
+
+            run = False
+        
+
+        #Trying to change the method so that it would check if the pieces = to 0 then run the game.winner() command but seems to be having issues
+
         if game.terminate() != None:
             print(game.terminate())
             run = False
