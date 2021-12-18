@@ -41,10 +41,10 @@ class Game:
     #UPDATE THE BOARD WITH OUR DUMB MOVES AAAAAAAAAAAAAAAAA
     def update(self):
         self.board.draw(self.win)
-        self.get_valid_moves(self.valid_moves)
+        self.validMoves(self.valid_moves)
         pygame.display.update()
 
-    #we go first because we're god
+    #initailize the values
     def _init(self):
         self.selected = None
         self.board = Board()
@@ -52,9 +52,7 @@ class Game:
         #empty list
         self.valid_moves = {}
 
-    def winner(self):
-        return self.board.winner()
-
+    #Call the terminate function from the board to check the remaining pieces on the board and see whoever wins (some small logic issues here though) 
     def terminate(self):
         return self.board.terminate()
 
@@ -62,6 +60,7 @@ class Game:
     def reset(self):
         self._init()
 
+    #Select the piece from the row + column when we click on it.  
     def select(self, row, col):
         if self.selected:
             result = self._move(row, col)
@@ -72,11 +71,12 @@ class Game:
         piece = self.board.get_piece(row, col)
         if piece != 0 and piece.color == self.turn:
             self.selected = piece
-            self.valid_moves = self.board.get_valid_moves(piece)
+            self.valid_moves = self.board.validMoves(piece)
             return True
             
         return False
 
+    #moving the piece and seeing all the valid locatiosn where we can move said piece being able to remove and then change turns after said move 
     def _move(self, row, col):
         piece = self.board.get_piece(row, col)
         if self.selected and piece == 0 and (row, col) in self.valid_moves:
@@ -84,18 +84,20 @@ class Game:
             skipped = self.valid_moves[(row, col)]
             if skipped:
                 self.board.remove(skipped)
-            self.change_turn()
+            self.turnChange()
         else:
             return False
 
         return True
 
-    def get_valid_moves(self, moves):
+    #validMoves grabs takes the info from the board validMoves class and then draws the pieces there 
+    def validMoves(self, moves):
         for move in moves:
             row, col = move
             pygame.draw.circle(self.win, GREEN, (col * SQUARE_SIZE + SQUARE_SIZE//2, row * SQUARE_SIZE + SQUARE_SIZE//2), 15)
 
-    def change_turn(self):
+
+    def turnChange(self):
         self.valid_moves = {}
         if self.turn == RED:
             self.turn = BLACK
@@ -109,7 +111,7 @@ class Game:
 
     def ai_move(self, board):
         self.board = board
-        self.change_turn()
+        self.turnChange()
 
 
 #This is where the fun begins 
@@ -117,6 +119,7 @@ class Board:
     def __init__(self):
 
         #initalizing the board mechanics 
+        #Supplementing the red_left and black_left with math to get the number of pieces automatically when change the board size through constants.py
         self.board = []
         self.turn = 0
         self.selected_piece = None
@@ -128,10 +131,12 @@ class Board:
 
         
         #just for message purposes 
-        self.message = False
+        #Message is unused as of now as before it was used to print out a message in console
+        #self.message = False
 
     #this creates the board
     #Changing from 8x8 to 6x6 for simplicity sake we can expand to other sizes if we need to in the future.  
+    #Board is now 8 x 8 to make sure it's difficult for players as more thoughts are needed. 
     def make_board(self):
         for row in range(ROWS):
             self.board.append([])
@@ -157,6 +162,7 @@ class Board:
 
 
     #Get the current number of pieces left 
+    #utilityish
     def evaluate(self):
         regPieces = self.black_left - self.red_left
         kingPieces = ((self.black_kings * 0.5) - (self.red_kings * 0.5)) 
@@ -165,7 +171,7 @@ class Board:
 
     #get a list of pieces cause we're dumb~~~~~
     #HASHIRE SORE YO KAZE NO YO NII TSUKIMIHARA WO PADORU PADORU 
-    def get_all_pieces(self, color):
+    def listPieces(self, color):
         #list
         pieces = []
         #
@@ -189,7 +195,7 @@ class Board:
                 piece.make_king()
                 self.red_kings += 1 
 
-    #Draw *bang*
+    #Draw the pieces onto the board
     def draw(self, win):
         self.draw_squares(win)
         for row in range(ROWS):
@@ -210,9 +216,9 @@ class Board:
 
 
 
-    #winner winner chicken dinner
+    #terminate terminate chicken dinner
     #gotta figure out 
-    def winner(self):
+    def terminate(self):
         if self.red_left == 0:
             # print("Red Wins")
             return "Red wins" 
@@ -222,81 +228,74 @@ class Board:
         else:
             return None 
 
-    '''
-    def terminate(self):
-        if self.red_left == 0:
-            self.winner()
-        elif self.black_left == 0:
-            self.winner()
-        else:
-            return None
-    '''
-
+    #Select the piece from the pyevent 
     def get_piece(self, row, col):
         singlePiece = self.board[row][col]
         return singlePiece
 
     #This might have to be changed to match a 6 x 6 board 
-    def get_valid_moves(self, piece):
+    def validMoves(self, piece):
         moves = {}
         left = piece.col - 1 
         right = piece.col + 1 
         row = piece.row 
 
         #update red or black piece 
-
+        #Fixed a logic issue where kings pieces only went up making player unable to move up but AI could 
+        #Now changed to make sure that king pieces are their own section where they can go up or down.  
         if piece.king:
             #looking down the rows
-            moves.update(self.move_piece_left(row + 1, min(row + 3, ROWS), 1, piece.color, left))
-            moves.update(self.move_piece_right(row + 1, min(row + 3, ROWS), 1, piece.color, right))
+            moves.update(self.moveLeft(row + 1, min(row + 3, ROWS), 1, piece.color, left))
+            moves.update(self.moveRight(row + 1, min(row + 3, ROWS), 1, piece.color, right))
             #looking up the rows 
-            moves.update(self.move_piece_left(row - 1, max(row - 3, -1), -1, piece.color, left))
-            moves.update(self.move_piece_right(row - 1, max(row - 3, -1), -1, piece.color, right))
+            moves.update(self.moveLeft(row - 1, max(row - 3, -1), -1, piece.color, left))
+            moves.update(self.moveRight(row - 1, max(row - 3, -1), -1, piece.color, right))
         #if the piece isn't a king then just find out if it's black or red and give it's normal rows 
         elif piece.color == BLACK:
-            moves.update(self.move_piece_left(row - 1, max(row - 3, -1), -1, piece.color, left))
-            moves.update(self.move_piece_right(row - 1, max(row - 3, -1), -1, piece.color, right))
+            moves.update(self.moveLeft(row - 1, max(row - 3, -1), -1, piece.color, left))
+            moves.update(self.moveRight(row - 1, max(row - 3, -1), -1, piece.color, right))
         elif piece.color == RED:
-            moves.update(self.move_piece_left(row + 1, min(row + 3, ROWS), 1, piece.color, left))
-            moves.update(self.move_piece_right(row + 1, min(row + 3, ROWS), 1, piece.color, right))
+            moves.update(self.moveLeft(row + 1, min(row + 3, ROWS), 1, piece.color, left))
+            moves.update(self.moveRight(row + 1, min(row + 3, ROWS), 1, piece.color, right))
             
 
         return moves 
 
     #SHIMMY UP LEFT OR RIGHT 
-    def move_piece_left(self, start, stop, step, color, left, skipped=[]):
+    def moveLeft(self, start, stop, step, color, left, skipped=[]):
         #dict of moves
         moves = {}
         #list of last moves 
         last = []
         #if there is no space left in the left side then break 
-        #r = row 
+        #r = row from start to stop, with steps
         for r in range(start, stop, step):
             #if we look outside the board, then break 
             if left < 0:
                 break
             
-            #
+            #current board and row
             current = self.board[r][left]
-            if current == 0:
+            if current == 0: #found empty square
+                #if we skipped a piece and not seen a piece to move where it is undefined then break 
                 if skipped and not last:
                     break
-                elif skipped:
+                elif skipped: #Keep going 
                     moves[(r, left)] = last + skipped
-                else:
+                else: #if nothing was true in the previous conditions then it's a potential move spot
                     moves[(r, left)] = last
                 
-                if last:
+                if last: #double jump or triple jump logic HOWEVER, this works for the AI not the player for some odd reason, Logic issues most likely 
                     if step == -1:
                         row = max(r-3, 0)
                     else:
                         row = min(r+3, ROWS)
-                    moves.update(self.move_piece_left(r+step, row, step, color, left-1,skipped=last))
-                    moves.update(self.move_piece_right(r+step, row, step, color, left+1,skipped=last))
+                    moves.update(self.moveLeft(r+step, row, step, color, left-1,skipped=last))
+                    moves.update(self.moveRight(r+step, row, step, color, left+1,skipped=last))
                 break
-            elif current.color == color:
+            elif current.color == color: #if piece we're trying to go through is an ally then don't go through 
                 break
-            else:
+            else: #if piece is an enemy then we can potentially jump over it. 
                 last = [current]
 
             left -= 1
@@ -305,7 +304,8 @@ class Board:
 
     #step do i go up or down 
     #skipped will tell us have we skipped any pieces, we can only move to 
-    def move_piece_right(self, start, stop, step, color, right, skipped=[]):
+    #Same comments as moveLeft
+    def moveRight(self, start, stop, step, color, right, skipped=[]):
         moves = {}
         last = []
         for r in range(start, stop, step):
@@ -326,8 +326,8 @@ class Board:
                         row = max(r-3, 0)
                     else:
                         row = min(r+3, ROWS)
-                    moves.update(self.move_piece_left(r+step, row, step, color, right-1,skipped=last))
-                    moves.update(self.move_piece_right(r+step, row, step, color, right+1,skipped=last))
+                    moves.update(self.moveLeft(r+step, row, step, color, right-1,skipped=last))
+                    moves.update(self.moveRight(r+step, row, step, color, right+1,skipped=last))
                 break
             elif current.color == color:
                 break

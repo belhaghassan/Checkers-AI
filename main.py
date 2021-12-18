@@ -8,12 +8,12 @@ from algorithmAI import *
 FPS = 60
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption('Checkers')
+pygame.display.set_caption('Checkers n Friends')
 
 
 
 #Get the position from the mouse clicking event
-def get_row_col_from_mouse(pos):
+def get_position(pos):
     x, y = pos
     row = y // SQUARE_SIZE
     col = x // SQUARE_SIZE
@@ -28,13 +28,14 @@ def get_row_col_from_mouse(pos):
 #         answer = eval(input("1 (Easy) - 4 (hard) Difficulty Level: "))
 #     return answer 
 
-#Same implementation as getDiff() but with an GUI attached for more simplicity
+#Same implementation as getDiff() but with an GUI attached for more 
 def tkinterDiff():
     root = tk.Tk()
 
     v = tk.IntVar()
     v.set(1) #Initializes the choice, i.e. Python 
 
+    #Difficulty Choices (changes the depth depending on the choice picked) 
     choices = [ ("1. Easy", 1),
                 ("2. Semi-Easy", 2),
                 ("3. Normal", 3),
@@ -58,6 +59,7 @@ def tkinterDiff():
 
 def main():
 
+    #For the console version if TKinter doesn't work out. 
     #depth = getDiff()
     depth = tkinterDiff()
     print("Difficulty: ", depth)
@@ -77,17 +79,9 @@ def main():
 
         
         #Checks the game each turn for a winner
-        if game.winner() != None:
-            print(game.winner())
-            run = False
-        
-
-        #Trying to change the method so that it would check if the pieces = to 0 then run the game.winner() command but seems to be having issues
-        '''
         if game.terminate() != None:
-            print(game.winner())
+            print(game.terminate())
             run = False
-        '''
 
         #Can quit but whenever game gets to a stalemate where no moves are available, game crashses 
         for event in pygame.event.get():
@@ -97,7 +91,7 @@ def main():
             #Select piece and move
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
-                row, col = get_row_col_from_mouse(pos)
+                row, col = get_position(pos)
                 game.select(row, col)
 
         game.update()
