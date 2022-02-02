@@ -19,9 +19,14 @@ To play this repo game of checkers download the repo and install pygames and tki
 
 ```
 git clone https://github.com/belhaghassan/Checkers-AI.git
-pip install pygames
-pip install tkinter
-
+```
+```
+pip install pygame
+```
+```
+cd /Checkers-AI
+```
+```
 python main.py
 ```
 
